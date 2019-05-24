@@ -29,6 +29,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import io.openvidu.server.core.SessionManager;
 import io.openvidu.server.kurento.core.KurentoSession;
 
+/**
+ * kms视频服务器管理类
+ * 用来管理kms，并可以获取视频操作对象
+ */
 public class FixedOneKmsManager extends KmsManager {
 
 	private static final Logger log = LoggerFactory.getLogger(FixedOneKmsManager.class);

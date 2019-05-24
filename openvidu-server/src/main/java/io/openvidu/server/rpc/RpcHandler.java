@@ -54,6 +54,9 @@ import io.openvidu.server.utils.GeoLocation;
 import io.openvidu.server.utils.GeoLocationByIp;
 import io.openvidu.server.utils.RandomStringGenerator;
 
+/**
+ * 继承DefaultJsonRpcHandler,实现自定义处理类
+ */
 public class RpcHandler extends DefaultJsonRpcHandler<JsonObject> {
 
 	private static final Logger log = LoggerFactory.getLogger(RpcHandler.class);
@@ -74,7 +77,7 @@ public class RpcHandler extends DefaultJsonRpcHandler<JsonObject> {
 	 */
 	private ConcurrentMap<String, Boolean> webSocketEOFTransportError = new ConcurrentHashMap<>();
 	/**
-	 * 处理客户端的请求
+	 * 处理客户端的请求F
 	 * 1、如果没有加入房间，就发送其他的请求，则抛出异常
 	 */
 	@Override
@@ -93,7 +96,7 @@ public class RpcHandler extends DefaultJsonRpcHandler<JsonObject> {
 		RpcConnection rpcConnection;//一个客户端对应一个
 		if (ProtocolElements.JOINROOM_METHOD.equals(request.getMethod())) {
 			// Store new RpcConnection information if method 'joinRoom'
-			rpcConnection = notificationService.newRpcConnection(transaction, request);
+			notificationService.newRpcConnection(transaction, request);
 		} else if (notificationService.getRpcConnection(participantPrivateId) == null) {
 			// Throw exception if any method is called before 'joinRoom'
 			log.warn(
@@ -590,7 +593,7 @@ public class RpcHandler extends DefaultJsonRpcHandler<JsonObject> {
 	@Override
 	public void afterConnectionEstablished(Session rpcSession) throws Exception {
 		log.info("After connection established for WebSocket session: {}", rpcSession.getSessionId());
-		if (rpcSession instanceof WebSocketServerSession) {
+		if (rpcSession instanceof WebSocketServerSession) {//如果是针对
 			InetAddress address;
 			HttpHeaders headers = ((WebSocketServerSession) rpcSession).getWebSocketSession().getHandshakeHeaders();
 			if (headers.containsKey("x-real-ip")) {

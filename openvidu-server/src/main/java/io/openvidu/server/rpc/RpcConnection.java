@@ -38,9 +38,9 @@ public class RpcConnection {
 	private static final Logger log = LoggerFactory.getLogger(RpcConnection.class);
 
 	private org.kurento.jsonrpc.Session session;
-	private ConcurrentMap<Integer, Transaction> transactions;
+	private ConcurrentMap<Integer, Transaction> transactions;//请求集合
 	private String sessionId;
-	private String participantPrivateId;
+	private String participantPrivateId;//参与者的私有id
 
 	public RpcConnection(Session session) {
 		this.session = session;

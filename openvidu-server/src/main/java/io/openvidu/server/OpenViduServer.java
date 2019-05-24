@@ -86,10 +86,14 @@ public class OpenViduServer implements JsonRpcConfigurer {
 
 	public static final String KMSS_URIS_PROPERTY = "kms.uris";
 
-	public static String wsUrl;
+	public static String wsUrl;//websocket请求路径
 
 	public static String httpUrl;
 
+	/**
+	 * 装载kms对象，以便可以操作kms视频服务器
+	 * @return
+	 */
 	@Bean
 	@ConditionalOnMissingBean
 	public KurentoClientProvider kmsManager() {
@@ -104,7 +108,7 @@ public class OpenViduServer implements JsonRpcConfigurer {
 			throw new IllegalArgumentException(KMSS_URIS_PROPERTY + " should contain at least one kms url");
 		}
 
-		String firstKmsWsUri = kmsWsUris.get(0);
+		String firstKmsWsUri = kmsWsUris.get(0);//如果有多个，为什么支取一个，有点不懂
 
 		if (firstKmsWsUri.equals("autodiscovery")) {
 			log.info("Using autodiscovery rules to locate KMS on every pipeline");
@@ -115,18 +119,30 @@ public class OpenViduServer implements JsonRpcConfigurer {
 		}
 	}
 
+	/**
+	 * 所有服务端响应处理对象
+	 * @return
+	 */
 	@Bean
 	@ConditionalOnMissingBean
 	public RpcNotificationService notificationService() {
 		return new RpcNotificationService();
 	}
 
+	/**
+	 * 会话管理对象
+	 * @return
+	 */
 	@Bean
 	@ConditionalOnMissingBean
 	public SessionManager sessionManager() {
 		return new KurentoSessionManager();
 	}
 
+	/**
+	 * websocket请求处理类对象（重点）
+	 * @return
+	 */
 	@Bean
 	@ConditionalOnMissingBean
 	public RpcHandler rpcHandler() {
@@ -151,18 +167,30 @@ public class OpenViduServer implements JsonRpcConfigurer {
 		return new KurentoParticipantEndpointConfig();
 	}
 
+	/**
+	 * token生成类
+	 * @return
+	 */
 	@Bean
 	@ConditionalOnMissingBean
 	public TokenGenerator tokenGenerator() {
 		return new TokenGeneratorDefault();
 	}
 
+	/**
+	 * 配置文件装载对象
+	 * @return
+	 */
 	@Bean
 	@ConditionalOnMissingBean
 	public OpenviduConfig openviduConfig() {
 		return new OpenviduConfig();
 	}
 
+	/**
+	 * 视频录制或者音频录制管理类
+	 * @return
+	 */
 	@Bean
 	@ConditionalOnMissingBean
 	public RecordingManager recordingManager() {
@@ -174,12 +202,21 @@ public class OpenViduServer implements JsonRpcConfigurer {
 		return new CoturnCredentialsServiceFactory(openviduConfig()).getCoturnCredentialsService();
 	}
 
+	/**
+	 * 根据ip信息获取客户端位置信息
+	 * @return
+	 */
 	@Bean
 	@ConditionalOnMissingBean
 	public GeoLocationByIp geoLocationByIp() {
 		return new GeoLocationByIpDummy();
 	}
 
+	/**
+	 * 注册处理类
+	 * 并添加拦截类
+	 * @param registry
+	 */
 	@Override
 	public void registerJsonRpcHandlers(JsonRpcHandlerRegistry registry) {
 		registry.addHandler(rpcHandler().withPingWatchdog(true).withInterceptors(new HttpHandshakeInterceptor()),
@@ -196,6 +233,12 @@ public class OpenViduServer implements JsonRpcConfigurer {
 		SpringApplication.run(OpenViduServer.class, args);
 	}
 
+	/**
+	 * 在启动类启动完成之前会自动调用
+	 * 初始化配置类对象
+	 * @throws MalformedURLException
+	 * @throws InterruptedException
+	 */
 	@PostConstruct
 	public void init() throws MalformedURLException, InterruptedException {
 		OpenviduConfig openviduConf = openviduConfig();

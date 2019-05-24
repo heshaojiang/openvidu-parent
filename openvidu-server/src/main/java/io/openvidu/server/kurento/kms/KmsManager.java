@@ -60,7 +60,7 @@ public abstract class KmsManager implements KurentoClientProvider {
 
   private final Logger log = LoggerFactory.getLogger(KmsManager.class);
 
-  private List<Kms> kmss = new ArrayList<Kms>();
+  private List<Kms> kmss = new ArrayList<Kms>();//存放kms服务器对象集合
   private Iterator<Kms> usageIterator = null;
 
   @Override
